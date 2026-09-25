@@ -37,6 +37,9 @@ def init_db():
                 ("脏数据-零宽", 0.0, 10.0, 0, "dirty", ""),
             ],
         )
-        conn.execute("INSERT INTO settings(key,value) VALUES ('unit','roll')")
-        conn.commit()
+    conn.executemany(
+        "INSERT OR IGNORE INTO settings(key,value) VALUES (?,?)",
+        [("unit", "roll"), ("default_orientation", "vertical")],
+    )
+    conn.commit()
     conn.close()

@@ -6,3 +6,4 @@ class EstimateRequest(BaseModel):
     roll_id: int
     save: bool = False
     note: str = ""
+    orientation: str | None = None

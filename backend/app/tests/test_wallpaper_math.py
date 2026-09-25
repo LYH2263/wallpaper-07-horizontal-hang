@@ -1,8 +1,11 @@
+import pytest
+
 from app.engines.wallpaper_math import roll_count
 
 
 def test_plain_master_bed():
     r = roll_count(16.0, 2.7, 0.53, 10.0, 0)
+    assert r["orientation"] == "vertical"
     assert r["drops"] == 31
     assert r["drop_len_m"] == 2.7
     assert r["strips_per_roll"] == 3
@@ -15,3 +18,35 @@ def test_pattern_wall():
     assert r["drop_len_m"] == 3.44
     assert r["strips_per_roll"] == 2
     assert r["rolls"] == 19
+
+
+def test_horizontal_plain():
+    r = roll_count(16.0, 2.7, 0.53, 10.0, 0, "horizontal")
+    assert r["orientation"] == "horizontal"
+    assert r["drops"] == 6  # ceil(2.7 / 0.53)
+    assert r["drop_len_m"] == 16.0  # perimeter + pattern
+    assert r["strips_per_roll"] == 1
+    assert r["rolls"] == 6
+
+
+def test_horizontal_pattern():
+    r = roll_count(20.0, 2.8, 0.53, 10.0, 64, "horizontal")
+    assert r["drops"] == 6  # ceil(2.8 / 0.53)
+    assert r["drop_len_m"] == 20.64  # 20.0 + 0.64
+    assert r["strips_per_roll"] == 1
+    assert r["rolls"] == 6
+
+
+def test_invalid_orientation():
+    with pytest.raises(ValueError):
+        roll_count(16.0, 2.7, 0.53, 10.0, 0, "diagonal")
+
+
+@pytest.mark.parametrize("orientation", ["vertical", "horizontal"])
+def test_non_positive_roll_size_rejected(orientation):
+    with pytest.raises(ValueError):
+        roll_count(16.0, 2.7, 0.0, 10.0, 0, orientation)
+    with pytest.raises(ValueError):
+        roll_count(16.0, 2.7, 0.53, 0.0, 0, orientation)
+    with pytest.raises(ValueError):
+        roll_count(16.0, 2.7, -0.53, 10.0, 0, orientation)

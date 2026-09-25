@@ -5,5 +5,7 @@ body { margin: 0; font-family: Georgia, serif; background: #faf3e8; }
 .page { padding: 1rem 1.5rem; }
 .strip-bar { display: flex; gap: 4px; align-items: flex-end; flex-wrap: wrap; }
 .strip { width: 14px; background: linear-gradient(#c49a6c, #8b5a2b); border-radius: 2px 2px 0 0; }
+.strip-bar.horizontal { flex-direction: column; align-items: flex-start; }
+.strip-bar.horizontal .strip { height: 14px; background: linear-gradient(90deg, #c49a6c, #8b5a2b); border-radius: 0 2px 2px 0; }
 .roll-chip { display: inline-block; margin: 0.25rem; padding: 0.5rem; background: #fff; border: 1px dashed #6b4226; }
 .warn { color: #a00; }
